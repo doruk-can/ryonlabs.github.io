@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect width="128" height="128" rx="30" fill="#0F172A"/>
-  <text x="64" y="58" font-family="Inter, system-ui, sans-serif" font-weight="bold" font-size="34" fill="#ffffff" text-anchor="middle">Ryon</text>
-  <text x="64" y="94" font-family="Inter, system-ui, sans-serif" font-weight="bold" font-size="34" fill="#ffffff" text-anchor="middle">Labs</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="512" height="512" shape-rendering="crispEdges">
+  <rect width="32" height="32" fill="#0B3A3C"/>
+  <path fill="#BFF4EA" d="M7 4h4v4h-4zM12 4h4v4h-4zM17 4h4v4h-4zM7 9h4v4h-4zM22 9h4v4h-4zM7 14h4v4h-4zM12 14h4v4h-4zM17 14h4v4h-4zM7 19h4v4h-4zM17 19h4v4h-4zM7 24h4v4h-4z"/>
+  <path fill="#FFB59A" d="M22 24h4v4h-4z"/>
 </svg>
