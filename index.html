@@ -1,55 +1,963 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#FFFFFF" />
-    <title>Ryon Labs</title>
-    <meta name="description" content="Ryon Labs develops high-quality mobile and web applications with a focus on clean architecture, security, and reliability." />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Ryon Labs",
-        "url": "https://ryonlabs.com",
-        "logo": "https://ryonlabs.com/logo.svg",
-        "description": "Ryon Labs develops high-quality mobile and web applications with a focus on clean architecture, security, and reliability."
-      }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #FFFFFF;
-        color: #0F172A;
-      }
-      .hide-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .hide-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
-
-<link rel="stylesheet" href="/index.css">
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-  }
-}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ryon Labs</title>
+<meta name="description" content="Ryon Labs develops high-quality mobile and web applications with a focus on clean architecture, security, and reliability.">
+<meta name="theme-color" content="#0B3A3C">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B3A3C'/%3E%3Cpath fill='%23BFF4EA' d='M7 4h4v4H7zM12 4h4v4h-4zM17 4h4v4h-4zM7 9h4v4H7zM22 9h4v4h-4zM7 14h4v4H7zM12 14h4v4h-4zM17 14h4v4h-4zM7 19h4v4H7zM17 19h4v4h-4zM7 24h4v4H7z'/%3E%3Cpath fill='%23FFB59A' d='M22 24h4v4h-4z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400..800&amp;family=Martian+Mono:wght@400&amp;display=swap">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"Ryon Labs","url":"https://ryonlabs.com","logo":"https://ryonlabs.com/logo.svg","description":"Ryon Labs develops high-quality mobile and web applications with a focus on clean architecture, security, and reliability."}
 </script>
-  <script type="module" crossorigin src="/assets/index-Cxpf9pyV.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* Decide the motion mode before first paint: "motion" = GSAP present and motion allowed, "fx" = particle canvas on. */
+(function (r) {
+  r.classList.add('js');
+  try {
+    if (window.gsap && window.ScrollTrigger && window.matchMedia && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      r.classList.add('motion');
+      var c = document.createElement('canvas');
+      if (c.getContext && c.getContext('2d')) r.classList.add('fx');
+      /* safety: reveal everything if the intro never starts */
+      setTimeout(function () { if (!window.RL_INTRO) { r.classList.add('done'); r.classList.remove('fx'); } }, 3000);
+    }
+  } catch (e) { r.classList.add('done'); }
+})(document.documentElement);
+</script>
+<style>
+:root {
+  --teal: #0B3A3C;
+  --aqua: #BFF4EA;
+  --peach: #FFB59A;
+  --white: #FFFFFF;
+  --aqua-50: rgba(191, 244, 234, .5);
+  --bw: 2px;
+  --s1: 4px;
+  --s2: 6px;
+  --s3: 10px;
+  --sans: Sora, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "Martian Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --gut: clamp(16px, 4vw, 56px);
+  --maxw: 1440px;
+  --ht: 10px;
+  --hh: 56px;
+  --hd: calc(var(--ht) + var(--hh) + var(--s1));
+  /* 2px checkerboard = the "pixel" hard shadow used by every surface */
+  --dither: conic-gradient(var(--aqua) 25%, transparent 0 50%, var(--aqua) 0 75%, transparent 0) 0 0 / 4px 4px;
+  /* square dot grid used to "rasterise" type in the static fallbacks */
+  --dots: conic-gradient(at 2px 2px, transparent 75%, var(--aqua) 0) 0 0 / 3px 3px;
+}
+@media (min-width: 720px) {
+  :root { --ht: 16px; --hh: 60px; --dots: conic-gradient(at 3px 3px, transparent 75%, var(--aqua) 0) 0 0 / 5px 5px; }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: clip; background: var(--teal); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scrollbar-color: var(--aqua) var(--teal); }
+body {
+  margin: 0; overflow-x: clip;
+  background: var(--teal); color: var(--aqua);
+  font: 400 1.0625rem/1.65 var(--sans);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, p, ul, ol, address { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: var(--peach); text-decoration-thickness: 2px; text-underline-offset: .2em; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+svg { display: block; flex: none; }
+[hidden] { display: none !important; }
+::selection { background: var(--peach); color: var(--teal); }
+:focus-visible { outline: 2px solid var(--white); outline-offset: 3px; }
+main:focus { outline: none; }
+section[id] { scroll-margin-top: var(--hd); }
+html:not(.js) .needs-js { display: none !important; }
+.wrap { width: min(100% - 2 * var(--gut), var(--maxw)); margin-inline: auto; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.label { font: 400 .75rem/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.skip {
+  position: fixed; left: 12px; top: 12px; z-index: 100; padding: .8em 1em;
+  color: var(--teal); background: var(--peach); font-weight: 700; text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip:focus { transform: none; }
+
+/* ---------- Particle field ---------- */
+.field { position: fixed; left: 0; top: 0; z-index: 0; display: none; width: 100%; height: 100vh; height: 100lvh; pointer-events: none; }
+.fx .field { display: block; }
+.fx .fb { visibility: hidden; }
+main, .footer { position: relative; z-index: 1; }
+.dots { color: var(--aqua); }
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .dots { background: var(--dots); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+}
+
+/* ---------- Controls: one outline, one shadow scale (4 / 6 / 10), square corners ---------- */
+.btn {
+  --sh: var(--s1);
+  display: inline-flex; align-items: center; justify-content: center; gap: .6em;
+  min-height: 50px; padding: 0 1.25em; cursor: pointer;
+  font: 700 1rem/1 var(--sans); letter-spacing: -.01em; white-space: nowrap; text-decoration: none;
+  color: var(--aqua); background: var(--teal);
+  border: var(--bw) solid var(--aqua); border-radius: 0;
+  box-shadow: var(--sh) var(--sh) 0 var(--aqua);
+}
+.btn--p { color: var(--teal); background: var(--peach); border-color: var(--teal); }
+.btn--sm { min-height: 44px; padding: 0 1em; font-size: .9375rem; }
+.btn--sq { width: 44px; min-height: 44px; padding: 0; }
+.btn svg, .mail svg { width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: square; }
+.btn:active, .mail:active { transform: translate(var(--sh), var(--sh)); box-shadow: 0 0 0 var(--aqua); }
+@media (hover: hover) {
+  .btn:hover, .mail:hover { transform: translate(-2px, -2px); box-shadow: var(--s2) var(--s2) 0 var(--aqua); }
+  .btn:hover .arr, .mail:hover svg { transform: translateX(4px); }
+  .btn:active, .mail:active { transform: translate(var(--sh), var(--sh)); box-shadow: 0 0 0 var(--aqua); }
+}
+
+/* ---------- Header ---------- */
+.site-header { position: fixed; top: var(--ht); left: 0; right: 0; z-index: 50; pointer-events: none; }
+.bar {
+  position: relative; pointer-events: auto;
+  display: flex; align-items: center; gap: 10px; height: var(--hh); padding: 0 8px 0 14px;
+  background: var(--teal); border: var(--bw) solid var(--aqua);
+}
+.bar::before { content: ""; position: absolute; z-index: -1; inset: calc(-1 * var(--bw)); transform: translate(var(--s1), var(--s1)); background: var(--dither); }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px; margin-left: -6px; padding: 6px;
+  color: var(--aqua); font: 800 1.125rem/1 var(--sans); letter-spacing: -.02em; text-decoration: none; white-space: nowrap;
+}
+.mark { width: 19px; height: 24px; overflow: visible; }
+.mark rect { fill: var(--aqua); }
+.mark .pk { fill: var(--peach); }
+.nav { display: none; margin-left: auto; }
+.nav ul { display: flex; }
+.nav a { position: relative; display: block; padding: 12px 14px; color: var(--aqua); text-decoration: none; }
+.nav a::after {
+  content: ""; position: absolute; left: 14px; right: 14px; bottom: 6px; height: 2px;
+  background: linear-gradient(90deg, var(--peach) 2px, transparent 0) 0 0 / 4px 2px;
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+.nav a:hover::after, .nav a:focus-visible::after { transform: none; }
+.bar > .btn { margin-left: auto; }
+@media (min-width: 720px) {
+  .bar { padding: 0 10px 0 18px; }
+  .nav { display: block; }
+  .bar > .btn { margin-left: 6px; }
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  display: flex; flex-direction: column; justify-content: center;
+  min-height: 100vh; min-height: 100svh;
+  padding: calc(var(--hd) + clamp(20px, 4vh, 48px)) 0 clamp(44px, 8vh, 88px);
+}
+.hero__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+.pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 12px; border: var(--bw) solid var(--aqua); }
+.pill::before, .eyebrow::before { content: ""; flex: none; width: 8px; height: 8px; background: var(--peach); }
+.plats { display: flex; }
+.plats li { padding: 9px 12px; border: var(--bw) solid var(--aqua); }
+.plats li + li { border-left: 0; }
+.stage--word { position: relative; container-type: inline-size; width: 100%; aspect-ratio: 2 / 1; margin: clamp(22px, 4.5vh, 48px) 0 clamp(26px, 5vh, 56px); }
+.wfb { display: flex; flex-direction: column; justify-content: center; height: 100%; font: 800 23vw/.86 var(--sans); font-size: 27cqi; letter-spacing: -.02em; white-space: nowrap; }
+@media (min-width: 640px) {
+  .stage--word { aspect-ratio: 7.6 / 1; }
+  .wfb { flex-direction: row; align-items: center; gap: .26em; font-size: 14vw; font-size: 15.4cqi; }
+}
+.hero h1 { max-width: 30ch; color: var(--white); font: 700 clamp(2.05rem, .9rem + 3.9vw, 4.4rem)/1.13 var(--sans); letter-spacing: -.035em; text-wrap: balance; }
+.chip { position: relative; isolation: isolate; display: inline-block; padding: 0 .14em .04em; color: var(--teal); }
+.chip::before {
+  content: ""; position: absolute; z-index: -1; inset: 0;
+  background: var(--aqua); border: var(--bw) solid var(--teal);
+  box-shadow: var(--s2) var(--s2) 0 var(--aqua); transform-origin: 0 50%;
+}
+.chip--p::before { background: var(--peach); }
+.nw { white-space: nowrap; }
+.split .w { display: inline-block; }
+.hero__foot { display: grid; gap: 26px 48px; align-items: end; margin-top: clamp(26px, 4.5vh, 48px); }
+.hero__foot > * { min-width: 0; }
+.hero__sub { max-width: 38ch; font-size: clamp(1.125rem, 1rem + .55vw, 1.45rem); line-height: 1.5; }
+.ctas { display: flex; flex-wrap: wrap; gap: 14px 18px; }
+@media (min-width: 960px) { .hero__foot { grid-template-columns: minmax(0, 1fr) auto; } }
+
+/* ---------- Sections: text column + particle stage ---------- */
+.sec { padding: clamp(72px, 13vh, 150px) 0; }
+.sec__grid { display: grid; gap: clamp(32px, 6vw, 88px); }
+.sec__grid > * { min-width: 0; }
+.stage { display: flex; align-items: center; justify-content: center; }
+.shape { position: relative; flex: none; }
+.shape--phone { height: min(56vh, 400px); height: min(56svh, 400px); aspect-ratio: 1 / 2; }
+.shape--web { width: min(100%, 560px); aspect-ratio: 640 / 450; }
+.shape--at { container-type: inline-size; overflow: hidden; width: min(100%, 300px); aspect-ratio: 1; }
+.fb { width: 100%; height: 100%; }
+.afb { display: flex; align-items: center; justify-content: center; font: 700 min(80vw, 270px)/1 var(--sans); font-size: 92cqi; }
+@media (min-width: 960px) {
+  .sec { padding: 0; }
+  .sec__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "text stage"; align-items: center; }
+  .sec--flip .sec__grid { grid-template-areas: "stage text"; align-items: start; }
+  .stage { grid-area: stage; position: sticky; top: var(--hd); align-self: start; height: calc(100vh - var(--hd)); }
+  .sec__text { grid-area: text; }
+  .sec--flip .sec__text { padding: 14vh 0 26vh; }
+  .shape--phone { height: min(78%, 640px); }
+  .shape--web { width: min(100%, 700px); }
+  .shape--at { width: min(100%, 72vh, 560px); }
+}
+
+/* panels: solid teal face over the field, dithered hard shadow */
+.panel { position: relative; }
+.panel::before { content: ""; position: absolute; inset: 0; transform: translate(var(--so, var(--s3)), var(--so, var(--s3))); background: var(--dither); }
+.panel__in { position: relative; z-index: 1; padding: clamp(22px, 3.4vw, 52px); background: var(--teal); border: var(--bw) solid var(--aqua); }
+.panel__in p { max-width: 62ch; }
+.eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: clamp(14px, 2vw, 22px); }
+.h2 { color: var(--white); font: 800 clamp(1.85rem, 1rem + 3.3vw, 4.25rem)/1.02 var(--sans); letter-spacing: -.04em; text-wrap: balance; }
+.h2--xl { font-size: clamp(2.2rem, .9rem + 4.6vw, 5.25rem); }
+.lead { margin-top: clamp(16px, 2.4vw, 26px); font: 600 clamp(1.2rem, 1rem + .85vw, 1.65rem)/1.35 var(--sans); letter-spacing: -.015em; }
+.panel__in .lead { max-width: 32ch; }
+.lead + p, .lead + p + p { margin-top: 1em; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(20px, 3vw, 32px); }
+.tags li { padding: 8px 10px; border: var(--bw) solid var(--aqua); }
+
+/* capabilities: each item lifts while the browser shows its layout */
+.caps { display: grid; gap: clamp(22px, 3vw, 34px); margin-top: clamp(28px, 4vw, 48px); }
+.cap { --so: var(--s1); }
+.cap .panel__in { padding: clamp(20px, 2.6vw, 36px); }
+.cap h3 { display: flex; align-items: flex-start; gap: 14px; color: var(--white); font: 700 clamp(1.3rem, 1.05rem + .9vw, 1.85rem)/1.15 var(--sans); letter-spacing: -.02em; }
+.cap h3::before { content: ""; flex: none; width: 10px; height: 10px; margin-top: .35em; background: var(--aqua-50); }
+.cap p { margin-top: 10px; max-width: 48ch; }
+.cap.is-on { --so: var(--s2); }
+.cap.is-on .panel__in { transform: translate(-4px, -4px); }
+.cap.is-on h3::before { background: var(--peach); }
+@media (min-width: 960px) { .caps { gap: 18vh; } }
+
+/* contact */
+.contact__p { margin-top: clamp(16px, 2.4vw, 24px); max-width: 46ch; font-size: clamp(1.0625rem, 1rem + .3vw, 1.25rem); }
+.mailbox { container-type: inline-size; margin-top: clamp(24px, 3.2vw, 36px); }
+.mail {
+  --sh: var(--s1);
+  display: block; padding: clamp(14px, 2.2vw, 22px);
+  color: var(--teal); background: var(--peach); text-decoration: none;
+  border: var(--bw) solid var(--teal); box-shadow: var(--sh) var(--sh) 0 var(--aqua);
+}
+.mail__row {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .1em .3em; margin-top: 10px;
+  font: 800 clamp(1rem, 3.9vw, 2.9rem)/1.1 var(--sans); font-size: clamp(1rem, 7.6cqi, 2.9rem); letter-spacing: -.035em;
+}
+.mail__addr { min-width: 0; overflow-wrap: anywhere; }
+.mail svg { width: .85em; height: .85em; stroke-width: 2.6; }
+.rule { padding-top: 20px; background: linear-gradient(90deg, var(--aqua) 2px, transparent 0) 0 0 / 6px 2px repeat-x; }
+.addr { margin-top: clamp(26px, 3.6vw, 40px); }
+address { margin-top: 10px; font: 500 clamp(1.05rem, 1rem + .3vw, 1.3rem)/1.5 var(--sans); font-style: normal; }
+
+/* ---------- Footer ---------- */
+.footer { overflow: hidden; padding: clamp(48px, 8vw, 110px) 0 28px; background: var(--teal); border-top: var(--bw) solid var(--aqua); }
+.footer__mark { font: 800 clamp(2.6rem, 13.4vw, 13rem)/.86 var(--sans); letter-spacing: -.03em; white-space: nowrap; }
+.footer__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 24px; margin-top: clamp(32px, 5vw, 64px); padding-top: 24px; }
+.footer__links { display: flex; flex-wrap: wrap; gap: 12px 16px; }
+
+/* ---------- Privacy dialog: teal panel, pixel-dotted border ---------- */
+.policy { width: min(680px, 100% - 32px); max-width: none; max-height: none; margin: auto; padding: 0; overflow: visible; color: var(--aqua); background: transparent; border: 0; }
+.policy::before { content: ""; position: absolute; inset: 0; transform: translate(var(--s3), var(--s3)); background: var(--dither); }
+.policy::backdrop { background: rgba(3, 20, 21, .84); }
+.policy.is-fallback, html:not(.js) .policy:target { display: block; position: fixed; inset: 0; z-index: 100; height: fit-content; margin: auto; }
+.policy__in {
+  position: relative; max-height: calc(100vh - 64px); max-height: calc(100dvh - 64px);
+  overflow: auto; overscroll-behavior: contain; background: var(--teal);
+  border: 4px solid var(--aqua);
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23BFF4EA' d='M0 0h4v4H0zM12 0h4v4h-4zM0 12h4v4H0zM12 12h4v4h-4zM6 0h4v4H6zM6 12h4v4H6zM0 6h4v4H0zM12 6h4v4h-4z'/%3E%3C/svg%3E") 4 round;
+}
+.policy__bar {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px 16px clamp(18px, 4vw, 32px);
+  background: linear-gradient(90deg, var(--aqua-50) 2px, transparent 0) 0 100% / 6px 2px repeat-x, var(--teal);
+}
+.policy__bar h2 { color: var(--white); font: 800 clamp(1.4rem, 1.15rem + 1vw, 2rem)/1.1 var(--sans); letter-spacing: -.03em; }
+.policy__body { padding: 18px clamp(18px, 4vw, 32px) clamp(22px, 4vw, 36px); }
+.policy__body p { margin-bottom: .8em; font-size: 1rem; line-height: 1.65; }
+.policy__body .policy__date { display: inline-block; margin-bottom: 1.2em; padding: 7px 10px; border: var(--bw) solid var(--aqua); font-size: .75rem; }
+.policy__body h3 { display: flex; align-items: center; gap: 10px; margin: 1.5em 0 .5em; color: var(--white); font: 700 1.125rem/1.25 var(--sans); }
+.policy__body h3::before { content: ""; flex: none; width: 8px; height: 8px; background: var(--peach); }
+.policy__body a:hover { color: var(--white); }
+
+/* ---------- Motion (opt-in, and only once the script confirmed GSAP) ---------- */
+.motion:not(.done) .site-header { transform: translateY(-160%); }
+.motion:not(.done) .hero__top > *,
+.motion:not(.done) .hero h1:not(.split),
+.motion:not(.done) .hero h1 .w,
+.motion:not(.done) .hero__sub,
+.motion:not(.done) .hero .ctas > * { opacity: 0; }
+.motion:not(.done) .hero h1 .w { transform: translateY(.4em); }
+.motion:not(.done) .hero__sub,
+.motion:not(.done) .hero .ctas > * { transform: translateY(16px); }
+.motion:not(.done):not(.chips) .hero .chip::before { transform: scaleX(0); }
+
+@keyframes px { 40% { transform: translate(var(--dx), var(--dy)); } }
+@keyframes draw { from { clip-path: inset(0 -14px 100% -14px); } to { clip-path: inset(0 -14px -14px -14px); } }
+@keyframes fade { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  .btn, .mail { transition: transform .16s cubic-bezier(.3, .7, .4, 1.5), box-shadow .16s cubic-bezier(.3, .7, .4, 1.5); }
+  .motion:not(.done) .btn { transition: none; }
+  .arr, .mail svg { transition: transform .2s cubic-bezier(.3, .7, .4, 1.5); }
+  .nav a::after { transition: transform .3s steps(6, end); }
+  .panel::before, .cap .panel__in { transition: transform .4s cubic-bezier(.3, .7, .3, 1.35); }
+  .cap h3::before { transition: background-color .25s steps(2, end); }
+  .motion .hero .chip::before { transition: transform .5s steps(6, end) calc(var(--i, 0) * .12s); }
+  .policy[open] { animation: draw .42s steps(6, end) both; }
+  .policy[open]::backdrop { animation: fade .24s ease both; }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .brand:hover .mark rect { animation: px .7s cubic-bezier(.3, .7, .3, 1) both; }
+}
+@media print {
+  .field, .site-header, .stage, .stage--word, .skip, .panel::before { display: none !important; }
+}
+</style>
 </head>
-  <body>
-    <div id="root"></div>
+<body id="top">
+<a class="skip" href="#main">Skip to content</a>
+<canvas class="field" aria-hidden="true"></canvas>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="pa" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#BFF4EA"/></pattern>
+    <pattern id="pb" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#BFF4EA" fill-opacity=".5"/></pattern>
+    <pattern id="pc" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#FFB59A"/></pattern>
+    <symbol id="i-arrow" viewBox="0 0 20 20"><path d="M3 10h12M10 4.5l5.5 5.5-5.5 5.5"/></symbol>
+  </defs>
+</svg>
+
+<header class="site-header">
+  <div class="bar wrap">
+    <a class="brand" href="#top">
+      <svg class="mark" viewBox="0 0 19 24" aria-hidden="true" focusable="false">
+        <rect width="4" height="4" style="--dx:-3px;--dy:-4px"/><rect x="5" width="4" height="4" style="--dx:1px;--dy:-6px"/><rect x="10" width="4" height="4" style="--dx:4px;--dy:-3px"/>
+        <rect y="5" width="4" height="4" style="--dx:-5px;--dy:0px"/><rect x="15" y="5" width="4" height="4" style="--dx:6px;--dy:-1px"/>
+        <rect y="10" width="4" height="4" style="--dx:-4px;--dy:2px"/><rect x="5" y="10" width="4" height="4" style="--dx:-1px;--dy:5px"/><rect x="10" y="10" width="4" height="4" style="--dx:3px;--dy:3px"/>
+        <rect y="15" width="4" height="4" style="--dx:-6px;--dy:3px"/><rect x="10" y="15" width="4" height="4" style="--dx:2px;--dy:6px"/>
+        <rect y="20" width="4" height="4" style="--dx:-3px;--dy:5px"/><rect class="pk" x="15" y="20" width="4" height="4" style="--dx:7px;--dy:4px"/>
+      </svg>
+      <span>Ryon Labs</span>
+    </a>
+    <nav class="nav label" aria-label="Primary">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#capabilities">Capabilities</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn--p btn--sm" href="#contact">Contact</a>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero__top">
+        <p class="pill label">Mobile &amp; web software</p>
+        <ul class="plats label" aria-label="Platforms"><li>iOS</li><li>Android</li><li>Web</li></ul>
+      </div>
+
+      <div class="stage--word" data-shape="word" aria-hidden="true">
+        <div class="fb dots wfb"><span>RYON</span> <span>LABS</span></div>
+      </div>
+
+      <h1 id="hero-title">We build <span class="chip chip--p" style="--i:0">high-quality</span> mobile and software products for <span class="nw"><span class="chip" style="--i:1">iOS</span>,</span> <span class="nw"><span class="chip" style="--i:2">Android</span>,</span> and <span class="nw"><span class="chip" style="--i:3">the web</span>.</span></h1>
+
+      <div class="hero__foot">
+        <p class="hero__sub">We design and develop reliable, user-focused applications for consumers and businesses.</p>
+        <div class="ctas">
+          <a class="btn btn--p" href="#contact">Contact us<svg class="arr" aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></a>
+          <a class="btn" href="#about">Who we are</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="about" aria-labelledby="about-title">
+    <div class="wrap sec__grid">
+      <div class="stage" aria-hidden="true">
+        <div class="shape shape--phone" data-shape="phone">
+          <svg class="fb" viewBox="0 0 300 600" focusable="false"><g fill="url(#pa)"><path d="M36 78h112v20h-112z"/><rect x="8" y="8" width="284" height="584" rx="46" fill="none" stroke="url(#pa)" stroke-width="12"/><rect x="113" y="30" width="74" height="22" rx="11"/><rect x="107" y="566" width="86" height="8" rx="4"/></g><g fill="url(#pb)"><path d="M36 108h72v9h-72zM94 306h150v11h-150zM94 328h96v9h-96zM94 376h150v11h-150zM94 398h96v9h-96zM94 446h150v11h-150zM94 468h96v9h-96zM24 511h252v6h-252zM50 532h18v18h-18zM112 532h18v18h-18zM174 532h18v18h-18zM236 532h18v18h-18z"/><rect x="36" y="300" width="44" height="44" rx="8"/><rect x="36" y="370" width="44" height="44" rx="8"/><rect x="36" y="440" width="44" height="44" rx="8"/></g><g fill="url(#pc)"><rect x="36" y="134" width="228" height="140" rx="14"/></g></svg>
+        </div>
+      </div>
+      <div class="sec__text">
+        <div class="panel">
+          <div class="panel__in">
+            <p class="label eyebrow">About</p>
+            <h2 id="about-title" class="h2">Who We Are</h2>
+            <p class="lead">Ryon Labs is a software development company specializing in mobile and web applications.</p>
+            <p>We focus on clean architecture, security, reliability, and long-term maintainability. Our goal is to build products that feel simple to use and dependable in real-world scenarios.</p>
+            <p>We develop applications for distribution through the Apple App Store, Google Play, and the web.</p>
+            <ul class="tags label" aria-label="Distribution"><li>App Store</li><li>Google Play</li><li>Web</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--flip" id="capabilities" aria-labelledby="caps-title">
+    <div class="wrap sec__grid">
+      <div class="stage" aria-hidden="true">
+        <div class="shape shape--web" data-shape="web">
+          <svg class="fb" viewBox="0 0 640 450" focusable="false"><g fill="url(#pa)"><path d="M6 60h628v8h-628zM40 90h26v26h-26zM64 158h300v26h-300z"/><rect x="6" y="6" width="628" height="438" rx="14" fill="none" stroke="url(#pa)" stroke-width="10"/><circle cx="38" cy="35" r="8"/><circle cx="64" cy="35" r="8"/><circle cx="90" cy="35" r="8"/><rect x="150" y="22" width="340" height="26" rx="13" fill="none" stroke="url(#pa)" stroke-width="6"/></g><g fill="url(#pb)"><path d="M420 98h52v9h-52zM490 98h52v9h-52zM560 98h40v9h-40zM64 198h220v10h-220zM56 306h140v44h-140zM56 362h120v9h-120zM56 380h90v9h-90zM250 362h120v9h-120zM250 380h90v9h-90zM444 306h140v44h-140zM444 362h120v9h-120zM444 380h90v9h-90z"/><rect x="40" y="136" width="560" height="132" fill="none" stroke="url(#pb)" stroke-width="7"/><rect x="40" y="290" width="172" height="132" fill="none" stroke="url(#pb)" stroke-width="7"/><rect x="234" y="290" width="172" height="132" fill="none" stroke="url(#pb)" stroke-width="7"/><rect x="428" y="290" width="172" height="132" fill="none" stroke="url(#pb)" stroke-width="7"/></g><g fill="url(#pc)"><path d="M64 226h104v26h-104zM250 306h140v44h-140z"/></g></svg>
+        </div>
+      </div>
+      <div class="sec__text">
+        <p class="label eyebrow">iOS · Android · Web</p>
+        <h2 id="caps-title" class="h2">Capabilities</h2>
+        <ol class="caps" role="list">
+          <li class="cap panel">
+            <div class="panel__in">
+              <h3>iOS &amp; Android Applications</h3>
+              <p>Native mobile applications built with a focus on performance, stability, and platform best practices.</p>
+            </div>
+          </li>
+          <li class="cap panel">
+            <div class="panel__in">
+              <h3>Thoughtful Design</h3>
+              <p>User-centered design emphasizing clarity, simple interactions, and efficient user flows.</p>
+            </div>
+          </li>
+          <li class="cap panel">
+            <div class="panel__in">
+              <h3>Focused Functionality</h3>
+              <p>Purpose-driven features engineered for reliability, security, and long-term maintainability.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="contact" aria-labelledby="contact-title">
+    <div class="wrap sec__grid">
+      <div class="stage" aria-hidden="true">
+        <div class="shape shape--at" data-shape="at"><div class="fb dots afb">@</div></div>
+      </div>
+      <div class="sec__text">
+        <div class="panel">
+          <div class="panel__in">
+            <p class="label eyebrow">Contact</p>
+            <h2 id="contact-title" class="h2 h2--xl">Let’s Stay in Touch</h2>
+            <p class="contact__p">For business inquiries, collaborations, or product questions, contact us and our team will respond within one business day.</p>
+            <div class="mailbox">
+              <a class="mail" href="mailto:info@ryonlabs.com">
+                <span class="label">Email us</span>
+                <span class="mail__row"><span class="mail__addr">info@ryonlabs.com</span><svg aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg></span>
+              </a>
+            </div>
+            <div class="addr rule">
+              <p class="label">Address</p>
+              <address>30 N Gould St Ste N<br>Sheridan, WY 82801<br>USA</address>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <p class="footer__mark dots" aria-hidden="true">RYON LABS</p>
+    <div class="footer__row rule">
+      <p>© <span id="year">2026</span> Ryon Labs. All rights reserved.</p>
+      <ul class="footer__links">
+        <li><button type="button" class="btn btn--sm needs-js" data-privacy aria-haspopup="dialog" aria-controls="privacy">Privacy Policy</button><noscript><a class="btn btn--sm" href="#privacy">Privacy Policy</a></noscript></li>
+        <li><a class="btn btn--sm" href="mailto:info@ryonlabs.com">Contact</a></li>
+        <li><a class="btn btn--sm" href="#top">Back to top</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<dialog id="privacy" class="policy" aria-labelledby="privacy-title">
+  <div class="policy__in">
+    <div class="policy__bar">
+      <h2 id="privacy-title">Privacy Policy</h2>
+      <button type="button" class="btn btn--sq policy__close needs-js" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15"/></svg></button>
+      <noscript><a class="btn btn--sq" href="#" aria-label="Close"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M5 5l10 10M15 5L5 15"/></svg></a></noscript>
+    </div>
+    <div class="policy__body">
+      <p class="policy__date label">Last updated: <time id="policy-date" datetime="2026-10-08">October 8, 2026</time></p>
+      <p>Ryon Labs respects your privacy. This Privacy Policy explains how we handle information when you visit our website or contact us.</p>
+      <h3>Information We Collect</h3>
+      <p>We do not collect personal information through this website.</p>
+      <p>If you contact us via email, we may receive your email address and any information you choose to include in your message. This information is used solely to respond to your inquiry.</p>
+      <h3>How We Use Information</h3>
+      <p>Any information provided via email is used only for communication purposes and is not shared with third parties.</p>
+      <h3>Cookies and Analytics</h3>
+      <p>This website does not use cookies, tracking technologies, or analytics tools.</p>
+      <h3>Data Security</h3>
+      <p>We take reasonable measures to protect any information you choose to share with us via email.</p>
+      <h3>Contact</h3>
+      <p>If you have any questions about this Privacy Policy, you can contact us at:</p>
+      <p>Email: <a href="mailto:info@ryonlabs.com">info@ryonlabs.com</a></p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+  var d = document, w = window, root = d.documentElement, now = new Date(), field = null;
+  function $(s, c) { return (c || d).querySelector(s); }
+  function $$(s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); }
+  function cls(n, on) { root.classList.toggle(n, on !== false); }
+
+  var yr = $('#year');
+  if (yr) yr.textContent = String(now.getFullYear());
+  var pd = $('#policy-date');
+  if (pd) {
+    var z2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    pd.textContent = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    pd.setAttribute('datetime', now.getFullYear() + '-' + z2(now.getMonth() + 1) + '-' + z2(now.getDate()));
+  }
+  d.addEventListener('touchstart', function () {}, { passive: true }); /* :active feedback on iOS */
+
+  /* ---------- Privacy dialog ---------- */
+  var dlg = $('#privacy');
+  if (dlg) (function () {
+    var closeBtn = $('button.policy__close', dlg), scroller = $('.policy__in', dlg), lastFocus = null, downOut = false;
+    function isOpen() { return dlg.hasAttribute('open'); }
+    function open() {
+      if (isOpen()) return;
+      lastFocus = d.activeElement;
+      var modal = false;
+      if (typeof dlg.showModal === 'function') { try { dlg.showModal(); modal = true; } catch (e) { modal = false; } }
+      if (!modal) { dlg.setAttribute('open', ''); dlg.classList.add('is-fallback'); if (closeBtn) closeBtn.focus(); }
+      if (scroller) scroller.scrollTop = 0;
+      if (field) field.hold(true);
+    }
+    function after() {
+      dlg.classList.remove('is-fallback');
+      if (location.hash === '#privacy' && w.history && typeof history.replaceState === 'function') history.replaceState(null, '', location.pathname + location.search);
+      if (lastFocus && lastFocus !== d.body && typeof lastFocus.focus === 'function') lastFocus.focus();
+      lastFocus = null;
+      if (field) field.hold(false);
+    }
+    function close() {
+      if (!isOpen()) return;
+      if (!dlg.classList.contains('is-fallback') && typeof dlg.close === 'function') dlg.close(); /* fires "close" */
+      else { dlg.removeAttribute('open'); after(); }
+    }
+    function outside(e) { var r = dlg.getBoundingClientRect(); return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom; }
+    dlg.addEventListener('close', after);
+    dlg.addEventListener('pointerdown', function (e) { downOut = e.target === dlg && outside(e); });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg && downOut && outside(e)) close(); downOut = false; });
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    d.addEventListener('keydown', function (e) { if ((e.key === 'Escape' || e.key === 'Esc') && dlg.classList.contains('is-fallback') && isOpen()) close(); });
+    $$('[data-privacy]').forEach(function (b) { b.addEventListener('click', function (e) { e.preventDefault(); open(); }); });
+    if (location.hash === '#privacy') open();
+    w.addEventListener('hashchange', function () { if (location.hash === '#privacy') open(); });
+  })();
+
+  /* ---------- Motion: only when the head script confirmed GSAP + motion allowed ---------- */
+  var G = w.gsap, ST = w.ScrollTrigger;
+  if (!G || !ST || !root.classList.contains('motion')) { cls('fx', false); cls('done'); return; }
+  G.registerPlugin(ST);
+
+  var items = $$('.cap'), h1 = $('#hero-title'), words = h1 ? split(h1) : [];
+  if (root.classList.contains('fx')) {
+    try { field = Field($('.field')); if (dlg && dlg.hasAttribute('open')) field.hold(true); }
+    catch (e) { field = null; cls('fx', false); }
+  }
+
+  /* Split the h1 into word boxes; the heading keeps its full text as its accessible name. */
+  function split(el) {
+    var out = [];
+    el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+    Array.prototype.slice.call(el.childNodes).forEach(function (n) {
+      if (n.nodeType === 1) { n.classList.add('w'); n.setAttribute('aria-hidden', 'true'); out.push(n); return; }
+      if (n.nodeType !== 3) return;
+      var frag = d.createDocumentFragment();
+      n.nodeValue.split(/(\s+)/).forEach(function (p) {
+        if (!p) return;
+        if (!p.trim()) { frag.appendChild(d.createTextNode(p)); return; }
+        var s = d.createElement('span');
+        s.className = 'w'; s.setAttribute('aria-hidden', 'true'); s.textContent = p;
+        frag.appendChild(s); out.push(s);
+      });
+      el.replaceChild(frag, n);
+    });
+    el.classList.add('split');
+    return out;
+  }
+
+  /* Hero load: the seed bursts into the wordmark (~1.5s), then the type lands under it. */
+  var started = false;
+  function intro() {
+    if (started) return;
+    started = true; w.RL_INTRO = 1;
+    if (field) { try { field.start(); } catch (e) { field = null; cls('fx', false); } }
+    var ctas = $$('.hero .ctas > *'), safe = setTimeout(fin, 3000);
+    function fin() { clearTimeout(safe); cls('chips'); cls('done'); G.set(ctas, { clearProps: 'transform,opacity' }); }
+    G.timeline({ defaults: { ease: 'power3.out' }, onComplete: fin })
+      .to('.site-header', { y: 0, duration: .8, ease: 'back.out(1.3)' }, .1)
+      .fromTo('.hero__top > *', { clipPath: 'inset(0% 100% 0% 0%)' }, { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: .5, ease: 'steps(9)', stagger: .14, clearProps: 'clipPath' }, .3)
+      .to(words, { opacity: 1, y: 0, duration: .75, stagger: .03 }, 1.05)
+      .call(cls, ['chips'], 1.3)
+      .to('.hero__sub', { opacity: 1, y: 0, duration: .7 }, 1.5)
+      .to(ctas, { opacity: 1, y: 0, duration: .6, stagger: .08, ease: 'back.out(2)' }, 1.62);
+  }
+  var fw = d.fonts && d.fonts.load ? d.fonts.load('800 100px Sora') : null;
+  if (fw) Promise.race([fw, new Promise(function (r) { setTimeout(r, 900); })]).then(intro, intro);
+  else intro();
+  if (d.fonts && d.fonts.ready) d.fonts.ready.then(function () { if (field && started) field.rebuild(); });
+
+  /* Scroll: panels draw in line by line; scroll progress picks the particle shape. */
+  var mm = G.matchMedia();
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    $$('.sec .panel').forEach(function (p) {
+      G.fromTo(p, { clipPath: function () { return 'inset(-14px -14px ' + (p.offsetHeight + 14) + 'px -14px)'; } }, {
+        clipPath: 'inset(-14px -14px -14px -14px)', duration: .56, ease: 'steps(7)', clearProps: 'clipPath',
+        scrollTrigger: { trigger: p, start: 'top 88%', once: true }
+      });
+    });
+  });
+  mm.add({ desk: '(min-width: 960px)', still: '(prefers-reduced-motion: reduce)' }, function (c) {
+    if (c.conditions.still) { if (field) field.hold(true); cls('fx', false); return; }
+    if (field) { cls('fx'); field.hold(!!(dlg && dlg.hasAttribute('open'))); }
+    var S = [[$('.hero'), 'word'], [$('#about'), 'phone']];
+    if (c.conditions.desk) S.push([$('#capabilities'), 'webA', 0], [items[1], 'webB', 1], [items[2], 'webC', 2]);
+    else S.push([$('#capabilities'), 'webB']);
+    S.push([$('#contact'), 'at']);
+    var T = S.map(function (s, i) { return i ? ST.create({ trigger: s[0], start: 'top 48%' }) : null; }), cur = -1;
+    function pick() {
+      var y = w.pageYOffset, k = 0, i;
+      for (i = 1; i < T.length; i++) if (y >= T[i].start - 1) k = i;
+      if (k === cur) return;
+      cur = k;
+      if (field) field.go(S[k][1]);
+      items.forEach(function (it, j) { it.classList.toggle('is-on', S[k][2] === j); });
+    }
+    ST.create({ start: 0, end: 'max', onUpdate: pick, onRefresh: pick });
+    pick();
+    return function () { items.forEach(function (it) { it.classList.remove('is-on'); }); };
+  });
+
+  var mail = $('.mail');
+  if (mail) ['pointerenter', 'focus'].forEach(function (ev) { mail.addEventListener(ev, function () { if (field) field.pulse(); }); });
+  var rt = 0;
+  w.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (field) field.resize(); }, 200); });
+
+  /* ================= Particle field ================= */
+  function Field(cv) {
+    var ctx = cv.getContext('2d'), oc = d.createElement('canvas'), ox = oc.getContext('2d', { willReadFrequently: true });
+    if (!ctx || !ox) throw new Error('2d');
+    var EL = { word: $('[data-shape=word]'), phone: $('[data-shape=phone]'), web: $('[data-shape=web]'), at: $('[data-shape=at]') };
+    /* shapes in viewBox units — layers: [tone, density, "B x y w h r" fill | "R x y w h r stroke" | "C cx cy r"]; tone 0 aqua, 1 dim aqua, 2 peach */
+    var PH = [
+      [0, 1, 'R8 8 284 584 46 12;B113 30 74 22 11;B36 78 112 20 0;B107 566 86 8 4'],
+      [1, 1.4, 'B36 108 72 9 0;B36 300 44 44 8;B94 306 150 11 0;B94 328 96 9 0;B36 370 44 44 8;B94 376 150 11 0;B94 398 96 9 0;B36 440 44 44 8;B94 446 150 11 0;B94 468 96 9 0;B24 511 252 6 0;B50 532 18 18 0;B112 532 18 18 0;B174 532 18 18 0;B236 532 18 18 0'],
+      [2, 1.7, 'B36 134 228 140 14']
+    ];
+    var WF = 'R6 6 628 438 14 10;B6 60 628 8 0;C38 35 8;C64 35 8;C90 35 8;R150 22 340 26 13 6';
+    var WV = [ /* A: apps on iOS & Android · B: page layout · C: feature toggles */
+      [[0, 1.25, 'B44 100 230 24 0;R360 96 112 228 22 7;R492 118 112 228 22 7'],
+       [1, 1.4, 'B44 142 250 10 0;B44 164 228 10 0;B44 186 180 10 0;B378 136 76 10 0;B378 154 52 8 0;B510 158 76 10 0;B510 176 52 8 0;B378 268 76 8 0;B378 284 60 8 0;B510 290 76 8 0;B510 306 60 8 0;B44 300 26 26 0;B84 307 160 10 0;B44 342 26 26 0;B84 349 140 10 0;B44 384 26 26 0;B84 391 120 10 0'],
+       [2, 1.6, 'B44 222 128 40 0;B378 180 76 72 8;B510 202 76 72 8']],
+      [[0, 1.25, 'B40 90 26 26 0;B64 158 300 26 0'],
+       [1, 1.4, 'B420 98 52 9 0;B490 98 52 9 0;B560 98 40 9 0;R40 136 560 132 0 7;B64 198 220 10 0;R40 290 172 132 0 7;R234 290 172 132 0 7;R428 290 172 132 0 7;B56 306 140 44 0;B56 362 120 9 0;B56 380 90 9 0;B250 362 120 9 0;B250 380 90 9 0;B444 306 140 44 0;B444 362 120 9 0;B444 380 90 9 0'],
+       [2, 1.6, 'B64 226 104 26 0;B250 306 140 44 0']],
+      [[0, 1.25, 'B44 96 210 22 0;R528 296 68 34 17 7'],
+       [1, 1.4, 'B44 128 300 9 0;B44 172 230 12 0;B44 192 150 8 0;B44 236 230 12 0;B44 256 150 8 0;B44 300 230 12 0;B44 320 150 8 0;B44 364 230 12 0;B44 384 150 8 0;C547 313 9'],
+       [2, 1.6, 'B528 168 68 34 17;B528 232 68 34 17;B528 360 68 34 17']]
+    ];
+    var COL = ['#BFF4EA', 'rgba(191,244,234,.5)', '#FFB59A'];
+    var W = 0, H = 0, dpr = 1, N = 0, X, Y, VX, VY, KK, VM, RC, RS, SZ, REL;
+    var shapes = null, dims = {}, key = 'word', fresh = true, ax = 0, ay = 0, size = 2.4, sora = false;
+    var run = false, raf = 0, last = 0, lastIn = 0, energy = 0, amb = 0, held = false, live = false;
+    var mx = 0, my = 0, pmx = 0, pmy = 0, mOn = false, lastPulse = 0;
+    var avg = 16.7, work = 0, cnt = 0, cuts = 0, T0 = performance.now();
+    var fine = w.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    function elOf(k) { return EL[k.slice(0, 3) === 'web' ? 'web' : k]; }
+    function fontOK() { return !!(d.fonts && d.fonts.check && d.fonts.check('800 20px Sora')); }
+    /* 1,500–3,500 particles by viewport area; DPR capped at 2 */
+    function measure() {
+      W = cv.clientWidth || w.innerWidth; H = cv.clientHeight || w.innerHeight;
+      dpr = Math.min(w.devicePixelRatio || 1, 2);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      return Math.round(Math.max(1500, Math.min(3500, W * H / 520)));
+    }
+    function alloc(n) {
+      var oX = X, oY = Y, oVX = VX, oVY = VY, m = Math.min(n, N), i, r;
+      X = new Float32Array(n); Y = new Float32Array(n); VX = new Float32Array(n); VY = new Float32Array(n);
+      KK = new Float32Array(n); VM = new Float32Array(n); RC = new Float32Array(n); RS = new Float32Array(n); SZ = new Float32Array(n); REL = new Float64Array(n);
+      for (i = 0; i < n; i++) {
+        if (i < m) { X[i] = oX[i]; Y[i] = oY[i]; VX[i] = oVX[i]; VY[i] = oVY[i]; }
+        else { X[i] = Math.random() * W; Y[i] = Math.random() * H; }
+        r = (Math.random() - .5) * .6; /* per-particle spring twist, so paths curve in */
+        KK[i] = .7 + Math.random() * .6; VM[i] = 20 + Math.random() * 20; RC[i] = Math.cos(r); RS[i] = Math.sin(r); SZ[i] = .8 + Math.random() * .4;
+      }
+      N = n;
+    }
+
+    /* --- offscreen rendering + sampling --- */
+    function rr(c, x, y, ww, hh, r) {
+      r = Math.min(r, ww / 2, hh / 2);
+      c.moveTo(x + r, y); c.arcTo(x + ww, y, x + ww, y + hh, r); c.arcTo(x + ww, y + hh, x, y + hh, r);
+      c.arcTo(x, y + hh, x, y, r); c.arcTo(x, y, x + ww, y, r); c.closePath();
+    }
+    function paint(c, str, s) {
+      str.split(';').forEach(function (p) {
+        var t = p.charAt(0), a = p.slice(1).split(' ').map(function (v) { return v * s; });
+        c.beginPath();
+        if (t === 'C') { c.arc(a[0], a[1], a[2], 0, 6.2832); c.fill(); return; }
+        rr(c, a[0], a[1], a[2], a[3], a[4]);
+        if (t === 'B') c.fill(); else { c.lineWidth = a[5]; c.stroke(); }
+      });
+    }
+    function text(c, lines, wt, bw, bh, mid) {
+      var font = function (px) { return wt + ' ' + px + 'px Sora, ui-sans-serif, system-ui, sans-serif'; }, asc = 0, dsc = 0, wid = 0, L = [];
+      c.font = font(100);
+      lines.forEach(function (l) {
+        var m = c.measureText(l), le = m.actualBoundingBoxLeft || 0, ri = m.actualBoundingBoxRight || m.width;
+        asc = Math.max(asc, m.actualBoundingBoxAscent || 72); dsc = Math.max(dsc, m.actualBoundingBoxDescent || 0);
+        L.push(le); wid = Math.max(wid, le + ri);
+      });
+      var lh = asc + dsc, gap = lh * .26, th = lh * lines.length + gap * (lines.length - 1), s = Math.min(bw / wid, bh / th), x0 = mid ? (bw - wid * s) / 2 : 0, y0 = (bh - th * s) / 2 + asc * s;
+      c.font = font(100 * s);
+      lines.forEach(function (l, i) { c.fillText(l, x0 + L[i] * s, y0 + i * (lh + gap) * s); });
+    }
+    /* coverage mask + summed-area table: any cell's coverage in O(1) */
+    function raster(ww, hh, fn) {
+      oc.width = ww; oc.height = hh;
+      ox.fillStyle = ox.strokeStyle = '#000'; ox.lineJoin = 'round';
+      fn(ox);
+      var a = ox.getImageData(0, 0, ww, hh).data, Wd = ww + 1, M = new Uint8Array(ww * hh), C = new Uint32Array(Wd * (hh + 1)), x, y, c, o;
+      for (y = 0; y < hh; y++) {
+        for (c = 0, x = 0; x < ww; x++) {
+          if (a[((y * ww + x) << 2) + 3] > 127) { M[y * ww + x] = 1; c++; }
+          o = (y + 1) * Wd + x + 1; C[o] = C[o - Wd] + c;
+        }
+      }
+      return { M: M, C: C, w: ww, h: hh };
+    }
+    /* one particle per s×s cell that is ≥22% covered, placed on the centroid of its covered pixels */
+    function grid(T, s, out, tone) {
+      var Wd = T.w + 1, C = T.C, M = T.M, n = 0, x, y, x0, x1, y0, y1, k, i, j, sx, sy;
+      for (y = 0; y < T.h; y += s) {
+        y0 = y | 0; y1 = Math.min(T.h, (y + s) | 0);
+        for (x = 0; x < T.w; x += s) {
+          x0 = x | 0; x1 = Math.min(T.w, (x + s) | 0);
+          k = C[y1 * Wd + x1] - C[y0 * Wd + x1] - C[y1 * Wd + x0] + C[y0 * Wd + x0];
+          if (k && k >= (x1 - x0) * (y1 - y0) * .22) {
+            n++;
+            if (out) {
+              for (sx = sy = 0, j = y0; j < y1; j++) for (i = x0; i < x1; i++) if (M[j * T.w + i]) { sx += i; sy += j; }
+              out.push(sx / k + .5, sy / k + .5, tone);
+            }
+          }
+        }
+      }
+      return n;
+    }
+    /* bisect the cell size so the shape takes exactly n particles, then shuffle who goes where */
+    function fit(L, n) {
+      var lo = 1, hi = 64, s, m, i, j, q, out = [];
+      for (i = 0; i < 16; i++) {
+        s = (lo + hi) / 2;
+        for (m = 0, j = 0; j < L.length; j++) m += grid(L[j].T, s * L[j].k);
+        if (m >= n) lo = s; else hi = s;
+      }
+      for (j = 0; j < L.length; j++) grid(L[j].T, lo * L[j].k, out, L[j].t);
+      m = out.length / 3;
+      var o = { x: new Float32Array(n), y: new Float32Array(n), t: new Uint8Array(n), s: lo }, idx = new Uint32Array(m);
+      for (i = 0; i < m; i++) idx[i] = i;
+      for (i = m - 1; i > 0; i--) { j = (Math.random() * (i + 1)) | 0; q = idx[i]; idx[i] = idx[j]; idx[j] = q; }
+      for (i = 0; m && i < n; i++) {
+        q = idx[i < m ? i : (Math.random() * m) | 0] * 3;
+        o.x[i] = out[q]; o.y[i] = out[q + 1]; o.t[i] = out[q + 2];
+      }
+      return o;
+    }
+    function lay(g, b, s) { return g.map(function (l) { return { T: raster(b[0], b[1], function (c) { paint(c, l[2], s); }), k: l[1], t: l[0] }; }); }
+    function area(T) { return T.C[T.C.length - 1]; }
+    function dim(el) { var r = el.getBoundingClientRect(); return [Math.max(1, Math.round(r.width)), Math.max(1, Math.round(r.height))]; }
+    function build() {
+      var n = N, b, s, sh = {};
+      sora = fontOK();
+      b = dims.word = dim(EL.word);
+      sh.word = fit([{ T: raster(b[0], b[1], function (c) { text(c, b[0] / b[1] > 4 ? ['RYON LABS'] : ['RYON', 'LABS'], 800, b[0], b[1]); }), k: 1, t: 0 }], n);
+      b = dims.phone = dim(EL.phone);
+      sh.phone = fit(lay(PH, b, b[0] / 300), n);
+      /* browser: one shared frame on fixed particle indices + three content layouts */
+      b = dims.web = dim(EL.web); s = b[0] / 640;
+      var fr = [{ T: raster(b[0], b[1], function (c) { paint(c, WF, s); }), k: 1, t: 0 }], vs = WV.map(function (g) { return lay(g, b, s); }), af = area(fr[0].T), ac = 0;
+      vs.forEach(function (ls) { ls.forEach(function (l) { ac += area(l.T) / l.k / l.k / 3; }); });
+      var F = Math.min(n - 1, Math.max(1, Math.round(n * af / (af + ac || 1)))), fp = fit(fr, F);
+      vs.forEach(function (ls, i) {
+        var cp = fit(ls, n - F), o = { x: new Float32Array(n), y: new Float32Array(n), t: new Uint8Array(n), s: fp.s };
+        o.x.set(fp.x); o.y.set(fp.y); o.t.set(fp.t); o.x.set(cp.x, F); o.y.set(cp.y, F); o.t.set(cp.t, F);
+        sh['web' + 'ABC'.charAt(i)] = o;
+      });
+      b = dims.at = dim(EL.at);
+      sh.at = fit([{ T: raster(b[0], b[1], function (c) { text(c, ['@'], 700, b[0], b[1], 1); }), k: 1, t: 0 }], n);
+      shapes = sh;
+    }
+
+    /* --- choreography --- */
+    function centre() { var r = elOf(key).getBoundingClientRect(); ax = r.left; ay = r.top; fresh = false; return [r.left + r.width / 2, r.top + r.height / 2]; }
+    /* before the fonts are in, all particles wait as one seed pixel in the middle of the wordmark */
+    function seed() {
+      var c = centre(), i, a, q;
+      for (i = 0; i < N; i++) { a = Math.random() * 6.2832; q = Math.random() * 3; X[i] = c[0] + Math.cos(a) * q; Y[i] = c[1] + Math.sin(a) * q; VX[i] = VY[i] = 0; REL[i] = Infinity; }
+    }
+    function start() {
+      build();
+      var c = centre(), t = performance.now(), i, a, q, sp;
+      for (i = 0; i < N; i++) { /* burst from the centre, springs switch on 100–340 ms later */
+        a = Math.random() * 6.2832; q = Math.random() * 3; sp = 4 + Math.sqrt(Math.random()) * 12;
+        X[i] = c[0] + Math.cos(a) * q; Y[i] = c[1] + Math.sin(a) * q;
+        VX[i] = Math.cos(a) * sp; VY[i] = Math.sin(a) * sp;
+        REL[i] = t + 100 + Math.random() * 240;
+      }
+      live = true; energy = 1; lastIn = t; wake();
+    }
+    /* new shape: particles whose target moved get a small scatter kick, drift on the flow, then converge */
+    function go(k) {
+      if (!live) { if (k !== key) { key = k; fresh = true; } return; }
+      var a = shapes[key], b = shapes[k], same = elOf(k) === elOf(key), t = performance.now(), i, an, sp;
+      if (k === key || !b) return;
+      key = k; if (!same) fresh = true;
+      for (i = 0; i < N; i++) {
+        if (same && a.x[i] === b.x[i] && a.y[i] === b.y[i]) continue;
+        an = Math.random() * 6.2832; sp = 1 + Math.random() * 4;
+        VX[i] += Math.cos(an) * sp; VY[i] += Math.sin(an) * sp;
+        REL[i] = t + 30 + Math.random() * 300;
+      }
+      energy = 1; lastIn = t; wake();
+    }
+    function pulse() {
+      var t = performance.now(), i, ex, ey, e, p;
+      if (!live || t - lastPulse < 700) return;
+      lastPulse = t;
+      var r = elOf(key).getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      for (i = 0; i < N; i++) { ex = X[i] - cx; ey = Y[i] - cy; e = Math.sqrt(ex * ex + ey * ey) + 1; p = 2 + Math.random() * 3; VX[i] += ex / e * p; VY[i] += ey / e * p; }
+      energy = Math.max(energy, .35); lastIn = t; wake();
+    }
+    function retarget() {
+      var t = performance.now();
+      for (var i = 0; i < N; i++) REL[i] = t - Math.random() * 120;
+      fresh = true; energy = Math.max(energy, .3); lastIn = t;
+    }
+
+    /* --- loop --- */
+    function tick(t) {
+      raf = 0;
+      if (!run) return;
+      var t1 = performance.now(), dt = t - last, i;
+      last = t;
+      dt = dt > 3 ? Math.min(dt, 50) : 16.67;
+      var f = dt / 16.667;
+      /* adapt: sustained slow frames -> fewer particles, re-sampled shapes */
+      if (live && ++cnt > 20) {
+        avg += (dt - avg) * .05;
+        if (cnt > 90 && avg > 24 && (work > 2.5 || avg > 40) && cuts < 3 && N > 800) { cuts++; cnt = 0; avg = 16.7; alloc(Math.round(N * .72)); build(); retarget(); }
+      }
+      /* particles live in the page: carry them with their anchor while it scrolls */
+      var S = live && shapes[key], r = elOf(key).getBoundingClientRect();
+      if (!fresh && (r.left !== ax || r.top !== ay)) { var dx = r.left - ax, dy = r.top - ay; for (i = 0; i < N; i++) { X[i] += dx; Y[i] += dy; } }
+      fresh = false; ax = r.left; ay = r.top;
+      var idle = t - lastIn > 3000 && energy < .02;
+      amb = !live || idle ? Math.max(0, amb - .02 * f) : Math.min(1, amb + .05 * f);
+      var amp = (.22 * amb + 1.3 * energy) * 105 * f, tt = (t - T0) * .00011,
+          dS = Math.pow(.77, f), dL = Math.pow(.955, f),
+          R = Math.max(70, Math.min(130, W * .075)), R2 = R * R,
+          pvx = Math.max(-40, Math.min(40, (mx - pmx) / f)), pvy = Math.max(-40, Math.min(40, (my - pmy) / f)),
+          sx = S && S.x, sy = S && S.y, mv = 0;
+      pmx = mx; pmy = my;
+      for (i = 0; i < N; i++) {
+        var x = X[i], y = Y[i], vx = VX[i], vy = VY[i], dm = dL, tr = t - REL[i];
+        if (sx && tr > 0) { /* damped spring, eased in after release */
+          var q = tr >= 280 ? 1 : tr * tr / 78400, gx = ax + sx[i] - x, gy = ay + sy[i] - y, k = .065 * KK[i] * q * f;
+          vx += (gx * RC[i] - gy * RS[i]) * k; vy += (gx * RS[i] + gy * RC[i]) * k;
+          dm = dL + (dS - dL) * q;
+        }
+        if (mOn) { /* pointer stirs: repel + swirl + drag, smooth falloff */
+          var ex = x - mx, ey = y - my, e2 = ex * ex + ey * ey;
+          if (e2 < R2) {
+            var e = Math.sqrt(e2) + .01, p = 1 - e / R;
+            p *= p * f; ex /= e; ey /= e;
+            vx += (ex * 2.4 - ey * .7 + pvx * .1) * p; vy += (ey * 2.4 + ex * .7 + pvy * .1) * p;
+          }
+        }
+        vx *= dm; vy *= dm;
+        var v2 = vx * vx + vy * vy;
+        if (v2 > VM[i] * VM[i]) { var c0 = VM[i] / Math.sqrt(v2); vx *= c0; vy *= c0; v2 = VM[i] * VM[i]; }
+        if (amp > .001) { /* curl-noise flow: analytic curl of a sum of sines, divergence-free */
+          var a1 = .0061 * x + tt, b1 = .0077 * y - 1.3 * tt, u = Math.cos(.0043 * (x + .6 * y) + .7 * tt);
+          x += (.00155 * u - .0077 * Math.sin(a1) * Math.sin(b1)) * amp;
+          y -= (.00258 * u + .0061 * Math.cos(a1) * Math.cos(b1)) * amp;
+        }
+        X[i] = x + vx * f; Y[i] = y + vy * f; VX[i] = vx; VY[i] = vy;
+        if (v2 > mv) mv = v2;
+      }
+      energy *= Math.pow(.975, f);
+      if (S) size += (Math.max(1.4, Math.min(3.3, S.s * .52)) - size) * Math.min(1, .08 * f);
+      draw(S);
+      work += (performance.now() - t1 - work) * .05;
+      if (idle && !amb && mv < 1e-4) { run = false; return; } /* settled and idle: sleep until input */
+      raf = requestAnimationFrame(tick);
+    }
+    function draw(S) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      var T = S ? S.t : null, c, i, x, y, s;
+      for (c = 0; c < 3; c++) {
+        if (c && !T) break;
+        ctx.beginPath();
+        for (i = 0; i < N; i++) {
+          if (T && T[i] !== c) continue;
+          x = X[i]; y = Y[i];
+          if (x > -4 && y > -4 && x < W + 4 && y < H + 4) { s = size * SZ[i]; ctx.rect(x - s / 2, y - s / 2, s, s); }
+        }
+        ctx.fillStyle = COL[c];
+        ctx.fill();
+      }
+    }
+    function wake() {
+      if (run || held || d.hidden) return;
+      run = true; last = performance.now(); pmx = mx; pmy = my;
+      raf = requestAnimationFrame(tick);
+    }
+    function stop() { run = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
+    function hold(h) { held = h; if (h) stop(); else { lastIn = performance.now(); wake(); } }
+    function resize() {
+      var ch = false, k, b, n;
+      if (cv.clientWidth !== W || cv.clientHeight !== H) { n = measure(); if (!cuts && Math.abs(n - N) > N * .2) { alloc(n); ch = true; } }
+      for (k in EL) { b = dim(EL[k]); if (!dims[k] || dims[k][0] !== b[0] || dims[k][1] !== b[1]) ch = true; }
+      if (ch && shapes) { build(); retarget(); }
+      lastIn = performance.now(); wake();
+    }
+    function rebuild() { if (shapes && fontOK() !== sora) { build(); retarget(); wake(); } }
+
+    d.addEventListener('visibilitychange', function () { if (d.hidden) stop(); else { lastIn = performance.now(); wake(); } });
+    w.addEventListener('scroll', function () { lastIn = performance.now(); wake(); }, { passive: true });
+    if (fine) {
+      w.addEventListener('pointermove', function (e) {
+        if (e.pointerType === 'touch') return;
+        mx = e.clientX; my = e.clientY;
+        if (!mOn) { mOn = true; pmx = mx; pmy = my; }
+        lastIn = performance.now(); wake();
+      }, { passive: true });
+      d.addEventListener('mouseout', function (e) { if (!e.relatedTarget) mOn = false; });
+      w.addEventListener('blur', function () { mOn = false; });
+    }
+
+    alloc(measure()); seed(); wake();
+    return { start: start, go: go, pulse: pulse, hold: hold, resize: resize, rebuild: rebuild };
+  }
+})();
+</script>
 </body>
 </html>
