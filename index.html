@@ -624,7 +624,8 @@ address { margin-top: 10px; font: 500 clamp(1.05rem, 1rem + .3vw, 1.3rem)/1.5 va
       });
     });
   });
-  mm.add({ desk: '(min-width: 960px)', still: '(prefers-reduced-motion: reduce)' }, function (c) {
+  /* gsap.matchMedia only runs this when a condition matches, so phones need their own query */
+  mm.add({ desk: '(min-width: 960px)', mob: '(max-width: 959.98px)', still: '(prefers-reduced-motion: reduce)' }, function (c) {
     if (c.conditions.still) { if (field) field.hold(true); cls('fx', false); return; }
     if (field) { cls('fx'); field.hold(!!(dlg && dlg.hasAttribute('open'))); }
     var S = [[$('.hero'), 'word'], [$('#about'), 'phone']];
